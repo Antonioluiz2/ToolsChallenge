@@ -30,7 +30,6 @@ public class TransacaoController {
 	    @PostMapping("/pagamentos")
 	    public Transacao criarPagamento(@RequestBody Transacao tr) {
 	        return transacaoService.realizarPagamento(tr);
-//	        return repository.save(tr);
 	    }
 
 	    @GetMapping("/pagamentos/{id}")

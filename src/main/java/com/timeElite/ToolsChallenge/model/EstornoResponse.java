@@ -9,7 +9,6 @@ import jakarta.persistence.Id;
 public class EstornoResponse extends Transacao{
 	public EstornoResponse(Long id, String cartao, Descricao descricao, FormaPagamento formaPagamento) {
 		super(id, cartao, descricao, formaPagamento);
-		// TODO Auto-generated constructor stub
 	}
 	private static final long serialVersionUID = 1L;
 	
@@ -19,26 +18,26 @@ public class EstornoResponse extends Transacao{
 	private Descricao descricao;
 	
 
-//	public EstornoResponse() {
-//		// TODO Auto-generated constructor stub
-//	}
-//
-//	public EstornoResponse(Descricao descricao) {
-//		this.descricao = descricao;
-//	}
-//
-//	public Descricao getDescricao() {
-//		return descricao;
-//	}
-//
-//	public void setDescricao(Descricao descricao) {
-//		this.descricao = descricao;
-//	}
+	public EstornoResponse() {
+		// TODO Auto-generated constructor stub
+	}
+
+	public EstornoResponse(Descricao descricao) {
+		this.descricao = descricao;
+	}
+
+	public Descricao getDescricao() {
+		return descricao;
+	}
+
+	public void setDescricao(Descricao descricao) {
+		this.descricao = descricao;
+	}
 
 	public Transacao getTransacao() {
 		return transacao;
 	}
-//
+
 	public void setTransacao(Transacao transacao) {
 		this.transacao = transacao;
 	}

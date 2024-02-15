@@ -1,21 +1,17 @@
 package com.timeElite.ToolsChallenge.services;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.timeElite.ToolsChallenge.enuns.Status;
 import com.timeElite.ToolsChallenge.model.Descricao;
 import com.timeElite.ToolsChallenge.model.EstornoResponse;
 import com.timeElite.ToolsChallenge.model.PagamentoResponse;
 import com.timeElite.ToolsChallenge.model.Transacao;
-import com.timeElite.ToolsChallenge.repositories.PagamentoResponseRepository;
 import com.timeElite.ToolsChallenge.repositories.TransacaoRepository;
 
 @Service
@@ -24,8 +20,6 @@ public class TransacaoService {
 	@Autowired
 	private static TransacaoRepository repository;
 	
-	@Autowired
-	private PagamentoResponseRepository responseRepository;
 
 	public Transacao  realizarPagamento( Transacao tr ) {
 		return repository.save(tr);
@@ -91,9 +85,4 @@ public class TransacaoService {
 
         return response;
     }
-//
-//	public Transacao realizarPagamento(Transacao tr) {
-//		repository.save(tr);
-//		return null;
-//	}	
 }

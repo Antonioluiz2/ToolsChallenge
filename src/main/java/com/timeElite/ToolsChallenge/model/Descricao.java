@@ -12,13 +12,9 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
-//@Entity
 public class Descricao implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
-
-//	@JsonFormat(shape=JsonFormat.Shape.STRING,pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'",timezone = "GMT")
-//	private Instant dataHora;
 	private double valor;
 	private String dataHora=LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"));
 	private String estabelecimento;

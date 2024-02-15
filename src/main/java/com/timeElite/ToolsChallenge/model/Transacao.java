@@ -1,7 +1,5 @@
 package com.timeElite.ToolsChallenge.model;
 
-import org.springframework.boot.jackson.JsonComponent;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
