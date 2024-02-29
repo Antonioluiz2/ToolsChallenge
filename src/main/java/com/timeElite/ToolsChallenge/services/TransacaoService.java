@@ -11,6 +11,8 @@ import com.timeElite.ToolsChallenge.model.Descricao;
 import com.timeElite.ToolsChallenge.model.FormaPagamento;
 import com.timeElite.ToolsChallenge.model.ResponseTransacao;
 import com.timeElite.ToolsChallenge.model.Transacao;
+import com.timeElite.ToolsChallenge.repositories.DescricaoRepository;
+import com.timeElite.ToolsChallenge.repositories.FormaPagamentoRepository;
 import com.timeElite.ToolsChallenge.repositories.ResponseRepository;
 import com.timeElite.ToolsChallenge.repositories.TransacaoRepository;
 
@@ -25,6 +27,10 @@ public class TransacaoService {
 	private TransacaoRepository repository;
 	@Autowired
 	private ResponseRepository rr;
+	@Autowired
+	private DescricaoRepository dr;
+	@Autowired
+	private FormaPagamentoRepository pr;
 
 	public Transacao save(Transacao tr) {
 		ResponseTransacao tr1= new ResponseTransacao();
@@ -49,6 +55,30 @@ public class TransacaoService {
 
 	public Transacao getById(Long id) {
 		return repository.getReferenceById(id);
+	}
+	
+	public void delete(Long id) {
+		 rr.deleteById(id);
+		 repository.deleteById(id);
+		 dr.deleteById(id);
+		 pr.deleteById(id);
+	}
+	public Transacao update(Long id, Transacao obj) {
+		//ResponseTransacao entity = rr.getReferenceById(id);
+		Transacao tr=		repository.getReferenceById(id);
+		updateData(obj,tr);
+		return obj= repository.save(tr);
+		
+	}
+	private void updateData(Transacao entity, Transacao obj) {
+		//entity.setTransacao(entity.getTransacao());
+		obj.setCartao(obj.getCartao());
+		obj.setId(obj.getId());
+		obj.setDescricao(obj.getDescricao());
+		obj.setFormaPagamento(obj.getFormaPagamento());
+//		entity.setId(obj.getId());
+//		entity.setDescricao(obj.getDescricao());
+//		entity.setFormaPagamento(obj.getFormaPagamento());
 	}
 
 	// Realiza a solicitação de Extorno de processo de pagamento
@@ -83,5 +113,6 @@ public class TransacaoService {
 				return new ResponseTransacao(transacao);
 
 		}
+		
 	
 }

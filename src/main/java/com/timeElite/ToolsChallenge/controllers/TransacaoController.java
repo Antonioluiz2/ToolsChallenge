@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -38,7 +39,7 @@ public class TransacaoController {
         return ResponseEntity.ok().body(obj);
     }
 
-	@GetMapping("/pagamentos")
+	@GetMapping("/pagamentos/listar")
 	public ResponseEntity<java.util.List<Transacao>> getAll(@RequestBody Transacao tr){
 		java.util.List<Transacao> lt=service.getAll(tr);
 		ResponseEntity.ok().body(tr);
@@ -46,13 +47,6 @@ public class TransacaoController {
         return ResponseEntity.ok(lt);
 	}
 	
-	@GetMapping("/estorno")
-	public ResponseEntity<java.util.List<ResponseTransacao>> get(@RequestBody ResponseTransacao tr){
-		java.util.List<ResponseTransacao> lt=service.buscarResponse(tr);
-		ResponseEntity.ok().body(tr);
-		//   return convertToTransDTO(obj);
-        return ResponseEntity.ok(lt);
-	}
 	@GetMapping("/pagamentos/{id}")
 	public ResponseEntity<Transacao> getId(@PathVariable Long id,Transacao tr){
 		Transacao lt=service.getById(id);
@@ -60,16 +54,16 @@ public class TransacaoController {
 //		ResponseEntity.ok().body(id).status(200);
         return ResponseEntity.ok().body(lt);
 	}
-	@PutMapping(value = "/estornar/{id}")
-	public ResponseEntity<Transacao> estornarPagamentoById(@PathVariable Long id) {
-		Transacao response = service.processarSolicitarExtornoPagamento(id);
-		return response == null ? ResponseEntity.unprocessableEntity().build() : ResponseEntity.ok(response);
+	@PutMapping(value = "/pagamentos/estornar/{id}")
+	public ResponseEntity<Transacao> estornarPagamentoById(@PathVariable Long id, @RequestBody Transacao tr) {
+		Transacao response = service.update(id, tr);
+		return ResponseEntity.ok(response);
+//		return response == null ? ResponseEntity.unprocessableEntity().build() : ResponseEntity.ok(response);
 	}
 
-	@GetMapping(value = "/pagamento-estornado/{id}")
-	public ResponseEntity<?> getEstornoById(@PathVariable(required = false) Long id) {
-		ResponseTransacao response = service.buscarEstornoPorId(id);
-		return response == null ? ResponseEntity.unprocessableEntity().build() : ResponseEntity.ok(response);
+	@DeleteMapping(value = "/pagamentos/excluir/{id}")
+	public void delete(@PathVariable Long id){
+		service.delete(id);
 	}
 
 	
