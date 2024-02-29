@@ -1,88 +1,87 @@
 package com.timeElite.ToolsChallenge.services;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.apiPagamento.payNow.exceptions.ParametroInvalidoException;
 import com.timeElite.ToolsChallenge.enuns.Status;
 import com.timeElite.ToolsChallenge.model.Descricao;
-import com.timeElite.ToolsChallenge.model.EstornoResponse;
-import com.timeElite.ToolsChallenge.model.PagamentoResponse;
+import com.timeElite.ToolsChallenge.model.FormaPagamento;
+import com.timeElite.ToolsChallenge.model.ResponseTransacao;
 import com.timeElite.ToolsChallenge.model.Transacao;
+import com.timeElite.ToolsChallenge.repositories.ResponseRepository;
 import com.timeElite.ToolsChallenge.repositories.TransacaoRepository;
 
+import jakarta.transaction.Transactional;
+
+
 @Service
+@Transactional
 public class TransacaoService {
-	
+
 	@Autowired
-	private static TransacaoRepository repository;
-	
+	private TransacaoRepository repository;
+	@Autowired
+	private ResponseRepository rr;
 
-	public Transacao  realizarPagamento( Transacao tr ) {
+	public Transacao save(Transacao tr) {
+		ResponseTransacao tr1= new ResponseTransacao();
+		tr1.setTransacao(tr);
+		tr1.getTransacao();
+		FormaPagamento formaPagamento = tr.getFormaPagamento(); // Assuming getter method
+		Descricao desc=tr.getDescricao();
+		repository.save(desc);
+		repository.save(formaPagamento); // Assuming service method for saving FormaPagamento
+		repository.save(tr);
+		rr.save(tr1);
 		return repository.save(tr);
-    }
+	}
+
+	public List<Transacao> getAll(Transacao tr) {
+		return repository.findAll();
+	}
 	
-	public PagamentoResponse getPagamento(Long id) throws Exception {
-        Transacao transacao = repository.getReferenceById(id).orElse(null);
+	public List<ResponseTransacao> buscarResponse(ResponseTransacao tr) {
+		return rr.findAll();
+	}
 
-        if (transacao == null) {
-            throw new Exception("Pagamento não encontrado");
-        }
+	public Transacao getById(Long id) {
+		return repository.getReferenceById(id);
+	}
 
-        PagamentoResponse response = new PagamentoResponse();
-        response.setTransacao(transacao);
+	// Realiza a solicitação de Extorno de processo de pagamento
+		public Transacao processarSolicitarExtornoPagamento(Long id) {
 
-        return response;
-    }
+			Transacao pagamento = repository.getReferenceById(id);
+			ResponseTransacao rp= new ResponseTransacao(pagamento);
+			if (rp.getTransacao().getDescricao().getStatus() == Status.CANCELADO) {
+				throw new ParametroInvalidoException(
+						"Não possivel Extornar pagamento de ID: " + id + " pois pagamento já se encontra NEGADO. "
+								+ "Em caso de dúvidas por favor entre em contato com nosso Suporte");
+			}else {
+				rp.getTransacao().getDescricao().setStatus(Status.CANCELADO);
+			}
 
-    public List<PagamentoResponse> getAllPagamentos() {
-        List<Transacao> transacoes = repository.findAll();
+			
+			rp.getTransacao().getDescricao().setStatus(Status.CANCELADO);
 
-        List<PagamentoResponse> responses = new ArrayList<>();
-        for (Transacao transacao : transacoes) {
-            PagamentoResponse response = new PagamentoResponse();
-            response.setTransacao(transacao);
-            responses.add(response);
-        }
+			rp.setTransacao(repository.save(rp.getTransacao()));
 
-        return responses;
-    }
-    
-    public static List<Transacao> consultarPagamentos() {
-        return repository.findAll();
-    }
-    
-    public Transacao realizarEstorno(Long id) {
-    	Transacao pagamento = repository.findById(id).orElseThrow(() -> new RuntimeException("Pagamento não encontrado"));
-        Descricao des=new Descricao();
-        des.setStatus(Status.CANCELADO);
-        des.setDataHora(des.getDataHora());
+			return pagamento;
 
-       repository.save(des);
+		}
 
-        return pagamento;
-    }
+		// Retorna o extorno por ID
+		public ResponseTransacao buscarEstornoPorId(Long id) {
+			Transacao transacao = repository.getReferenceById(id);
+//				Transacao transacao = repository.findByIdAndDescricaoStatusIn(Long.parseLong(id), List.of(Status.CANCELADO))
+//						.orElseThrow(() -> null);
 
-    public EstornoResponse estornarPagamento(Long id) throws Exception {
-        Transacao transacao = repository.findById(id).orElse(null);
-        Descricao desc=new Descricao(id, null, null, id, id, null);
-        if (transacao == null) {
-            throw new Exception("Pagamento não encontrado");
-        }
+				// Retornado dessa maneira para seguir o exemplo enviado
+				return new ResponseTransacao(transacao);
 
-        if (!desc.getStatus().equals("AUTORIZADO")) {
-            throw new BadRequestException("Pagamento não pode ser estornado");
-        }
-
-        desc.setStatus(Status.CANCELADO);
-        repository.save(transacao);
-
-        EstornoResponse response = new EstornoResponse(id, null, desc, null);
-        response.setTransacao(transacao);
-
-        return response;
-    }
+		}
+	
 }
