@@ -10,14 +10,12 @@ API de Pagamentos
   - Testes com Postman
     
 ## Rotas da API:
-GET /api/pagamentos
-  -> Lista todas as transacoes
+Method: POST http://localhost:8080/api/pagamentos (Processa um Pagamento e retona o Pagamento)
 
-GET /api/pagamentos/{id}
-  -> Lista uma única transacao localizada pelo id
+Method: GET http://localhost:8080/api/pagamentos/listar (Retona a Lista Completa de Pagamentos)
 
-POST /api/v1/accounts
-  -> Cria uma conta
+Method: GET http://localhost:8080/api/pagamento/{id} GET (Retona um Pagamento por ID)
 
-POST /api/pagamentos/{id}/estorno
- -> Cria um estorno referenciado pelo id da transacao
+Method: PUT http://localhost:8080/api/pagamentos/estornar/{id} (Extorna um Pagamento Autorizado por ID para alteração)
+
+Method: Delete http://localhost:8080/api/pagamento/excluir/{id} GET (Exclui um Pagamento realizado)
